@@ -1,0 +1,40 @@
+---prime numbers
+
+p,q
+
+---n
+
+n=pq
+
+---phi
+
+phi = (q-1)(p-1)
+
+---public key (e)
+
+e = random.randint(2,phi)
+while gcd(e,phi) != 1:
+	e = random.randint(2,phi)
+return e
+
+---private key (d)
+
+x = extended_gcd(e,phi)
+d = x[0] mod phi
+return d
+
+---Message 
+
+Message = M
+
+---Ciphertext (Encryption)
+
+C = M^e mod n
+
+---Plaintext (Decryption)
+
+M = C^d mod n
+
+
+
+
