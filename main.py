@@ -1,4 +1,5 @@
 
+import math
 import random
 from math import *
 
@@ -11,12 +12,55 @@ class main():
         p = 1
         q = 1
 
+        
+
         # length n
         n = p*q
 
         # phi
         phi = (q-1)(p-1)
 
+
+    # Dr. Hu
+    def testPrime_brute_force(psuedo_prime):
+        # a brute force method to test primality
+        if psuedo_prime == 2:
+            return True
+        else:
+            for b in range(2, math.floor(math.sqrt(p))):
+                if math.gcd(psuedo_prime, b) > 1:
+                    return False
+                else:
+                    continue
+            return True
+
+    # Dr. Hu
+    def finding_prime_number(self):
+        # Finding a pseudo-prime number using Fermat's test, then use testPrime_brute_force() method to test if it's PRIME
+
+        # n1,n2: very large integers
+        # k: constant integer, large enough so that probability of p not being prime is p ≤ (1/2)^k, 
+        # in this case, (1/2)^k can be arbitrarily small
+        n1=1000
+        n2=1500
+        k=150
+        p = random.randint(n1,n2)
+        # pseudo_prime = False
+        prime = False
+
+        while not prime: # original: while not pseudo_prime - REVISE
+            for i in range(k):
+                j = random.randint(2, p)
+                if pow(j, p-1, p) > 1:
+                    p = random.randint(n1, n2)
+                    break
+            # pseudo_prime = True
+            #Now test if prime (should be evaluated to True), and so continue the loop if not
+            prime = self.testPrime_brute_force(p)
+
+        return p
+    
+    
     # Dr. Hu
     def extended_gcd(self, a = 1, b = 1):
         
