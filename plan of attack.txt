@@ -36,5 +36,16 @@ C = M^e mod n
 M = C^d mod n
 
 
+---signature
+
+S = M^d mod n
+
+---verification
+
+M' = S^e mod n
+
+check that : M' = M
+
+
 
 
