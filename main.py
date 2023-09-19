@@ -1,4 +1,5 @@
 
+from asyncio.windows_events import NULL
 import math
 import random
 from math import *
@@ -6,19 +7,77 @@ from math import *
 
 class main():
     
+    
+    # For private user to decrypt public user's message
+    def decrypt_received_message(self):
+
+        if self.M == NULL:
+            print("Sorry, no received messages at the moment\n")
+            exit()
+        
+        decrypted_message = self.encrypt_or_decrypt_message(encrypt=False)
+
+        print("Decrypted message: " + decrypted_message)
+
+
+    # For public user to send an encrypted message
+    def send_encrypted_message(self):
+
+        if self.M != NULL:
+            answer = input("\nYou have a message currently that is encrypted and ready for the private user to read. Do you want to overwrite it? y/n: ")
+
+            if answer == 'y':
+                pass
+            elif answer == 'n':
+                exit()
+            else:
+                print("\nNo answer provided, you will be taken to the main menu\n")
+                exit()
+
+        self.M = input("\nEnter message: ")
+
+        if type(self.M,str) == False:
+            print("Sorry, please enter a valid String. You will now be taken to the main menu\n")
+            exit()
+
+        # DO SOMETHING ON SELF.M!!!!!
+
+        # Returns Ciphertext
+        self.C = self.encrypt_or_decrypt_message()
+
+        print("\nMessage encrypted and sent...\n")
+
+    # For public user to authenticate a digital signature
+    def auth_digital_sig(self):
+        
+        print("Hello World")
+
+
+    
+    def generating_RSA_keys(self):
+        
+        # Get n and phi
+        self.n,self.phi = self.picking_p_and_q()
+
+        # Get public (e) /private (d) keys
+        self.e = self.generate_public_key()
+
+        self.d = self.generate_private_key()
+
+
     def picking_p_and_q(self):
         
         # prime #'s p and q
-        p = 1
-        q = 1
-
-        
+        p = self.finding_prime_number()
+        q = self.finding_prime_number()
 
         # length n
         n = p*q
 
         # phi
         phi = (q-1)(p-1)
+
+        return n,phi
 
 
     # Dr. Hu
@@ -27,7 +86,7 @@ class main():
         if psuedo_prime == 2:
             return True
         else:
-            for b in range(2, math.floor(math.sqrt(p))):
+            for b in range(2, math.floor(math.sqrt(psuedo_prime))):
                 if math.gcd(psuedo_prime, b) > 1:
                     return False
                 else:
@@ -95,9 +154,9 @@ class main():
         #decrypt
         else:
             # M = C^d mod n
-            self.M = (self.C)^(self.d) % self.n
+            M = (self.C)^(self.d) % self.n
 
-        return self.M
+            return M
         
   
         
