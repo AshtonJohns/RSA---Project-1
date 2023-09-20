@@ -18,17 +18,24 @@ class rsa_functionality(object):
 
         if self.M == NULL:
             print("Sorry, no received messages at the moment\n")
-            exit()
+            return
         
         decrypted_message = self.encrypt_or_decrypt_message(encrypt=False)
 
-        for x in self.M:
-            x = ord(x)
-            x = (x-65)%26
-            x += 65
-            temp_M += chr(x)
+        decrypted_message = str(decrypted_message)
 
-        print("Decrypted message: " + str(decrypted_message))
+        decrypted_message_list = []
+        for i in range(0, len(decrypted_message), 2):
+            decrypted_message_list.append(decrypted_message[i:i+2])
+
+        
+        temp_M = ''
+        for x in decrypted_message_list:
+            temp_M += chr(int(x))
+
+        self.M = temp_M
+
+        print("Decrypted message: " + self.M)
 
 
     # For public user to send an encrypted message
@@ -40,16 +47,17 @@ class rsa_functionality(object):
             if answer == 'y':
                 pass
             elif answer == 'n':
-                exit()
+                return
             else:
                 print("\nNo answer provided, you will be taken to the main menu\n")
-                exit()
+                return
 
         self.M = input("\nEnter message: ")
 
-        if isinstance(self.M,str) == False:
-            print("Sorry, please enter a valid String. You will now be taken to the main menu\n")
-            exit()
+        # check user entry, if there are any restrictions, put them here
+        # if isinstance(int(self.M),int) == True:
+        #     print("Sorry, please enter a valid String. You will now be taken to the main menu\n")
+        #     return
 
         # DO SOMETHING ON SELF.M!!!!!
         self.M = self.M.upper()
@@ -57,9 +65,10 @@ class rsa_functionality(object):
         temp_M = ''
         for x in self.M:
             x = ord(x)
-            x = (x-65)%26
-            x += 65
-            temp_M += chr(x)
+            # x = (x-65)%26
+            # x += 65
+            # temp_M += chr(x)
+            temp_M += str(x)
 
         self.M = int(temp_M)
 
