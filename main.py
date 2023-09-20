@@ -27,7 +27,7 @@ class main():
         if psuedo_prime == 2:
             return True
         else:
-            for b in range(2, math.floor(math.sqrt(p))):
+            for b in range(2, math.floor(math.sqrt(psuedo_prime))):
                 if math.gcd(psuedo_prime, b) > 1:
                     return False
                 else:
