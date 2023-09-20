@@ -10,7 +10,40 @@ class rsa_functionality(object):
     def __init__(self):
         self.M = NULL
         self.C = NULL
+        self.decrypted_message = NULL
 
+    #converting between strings and integers
+    def message_conversion(self,numbers=NULL,message='',convert_to_text=True):
+
+        #conver to string
+        if convert_to_text:
+            #convert numbers to a string
+            numbers = str(numbers)
+            numbers_list = []
+            #make a list of string numbers, each index containing 2 digits
+            for i in range(0, len(numbers), 2):
+                numbers_list.append(numbers[i:i+2])
+            #temp string to append char values to 
+            temp_M = ''
+            #assemble word
+            for x in numbers_list:
+                temp_M += chr(int(x))
+            
+            numbers_to_string = temp_M # str of numbers but now in char
+            return numbers_to_string
+        #convert to integers
+        else:
+            #conver to uppercase to minimize troubles!
+            message = message.upper()
+            #temp string to append the typecasetd Unicode to
+            temp_M = ''
+            #get unicode for each letter in 'message', and append to temp_M
+            for x in message:
+                x = ord(x)
+                temp_M += str(x)
+
+            message_to_integers = int(temp_M) # convert to an integer for further operations...
+            return message_to_integers
 
 
     # For private user to decrypt public user's message
@@ -22,20 +55,20 @@ class rsa_functionality(object):
         
         decrypted_message = self.encrypt_or_decrypt_message(encrypt=False)
 
-        decrypted_message = str(decrypted_message)
+        # decrypted_message = str(decrypted_message)
 
-        decrypted_message_list = []
-        for i in range(0, len(decrypted_message), 2):
-            decrypted_message_list.append(decrypted_message[i:i+2])
+        # decrypted_message_list = []
+        # for i in range(0, len(decrypted_message), 2):
+        #     decrypted_message_list.append(decrypted_message[i:i+2])
 
         
-        temp_M = ''
-        for x in decrypted_message_list:
-            temp_M += chr(int(x))
+        # temp_M = ''
+        # for x in decrypted_message_list:
+        #     temp_M += chr(int(x))
 
-        self.M = temp_M
+        decrypted_message = self.message_conversion(decrypted_message,convert_to_text=True)
 
-        print("Decrypted message: " + self.M)
+        print("\nDecrypted message: " + decrypted_message + "\n")
 
 
     # For public user to send an encrypted message
@@ -52,27 +85,36 @@ class rsa_functionality(object):
                 print("\nNo answer provided, you will be taken to the main menu\n")
                 return
 
-        self.M = input("\nEnter message: ")
+        #self.M = input("\nEnter message: ")
+
+        message_to_encrypt = input("\nEnter message: ")
 
         # check user entry, if there are any restrictions, put them here
-        # if isinstance(int(self.M),int) == True:
-        #     print("Sorry, please enter a valid String. You will now be taken to the main menu\n")
-        #     return
 
-        # DO SOMETHING ON SELF.M!!!!!
-        self.M = self.M.upper()
+        message_to_encrypt = self.message_conversion(message_to_encrypt,convert_to_text=False)
 
-        temp_M = ''
-        for x in self.M:
-            x = ord(x)
-            # x = (x-65)%26
-            # x += 65
-            # temp_M += chr(x)
-            temp_M += str(x)
+        #store this into M for encryption
 
-        self.M = int(temp_M)
 
-        print("Your message you typed converted: " + str(self.M))
+        # # check user entry, if there are any restrictions, put them here
+        # # if isinstance(int(self.M),int) == True:
+        # #     print("Sorry, please enter a valid String. You will now be taken to the main menu\n")
+        # #     return
+
+        # # DO SOMETHING ON SELF.M!!!!!
+        # self.M = self.M.upper()
+
+        # temp_M = ''
+        # for x in self.M:
+        #     x = ord(x)
+        #     # x = (x-65)%26
+        #     # x += 65
+        #     # temp_M += chr(x)
+        #     temp_M += str(x)
+
+        # self.M = int(temp_M)
+
+        # print("Your message you typed converted: " + str(self.M))
 
         # Returns Ciphertext
         self.C = self.encrypt_or_decrypt_message()
@@ -85,6 +127,17 @@ class rsa_functionality(object):
     def auth_digital_sig(self):
         
         print("Hello World")
+
+    # For private user to digitally sign a message
+    def digital_sig(self,authenticate=True):
+        print("Hello world")
+
+        M = input("\nPlease enter your message to be digitally signed.\n")
+
+        if authenticate:
+            S = pow(M,2)
+
+        #MAKE SURE INPUT IS GOOD HERE
 
 
     
@@ -134,8 +187,8 @@ class rsa_functionality(object):
         # n1,n2: very large integers
         # k: constant integer, large enough so that probability of p not being prime is p ≤ (1/2)^k, 
         # in this case, (1/2)^k can be arbitrarily small
-        n1=1000
-        n2=1500
+        n1=100000
+        n2=150000
         k=150
         p = random.randint(n1,n2)
         # pseudo_prime = False
@@ -177,17 +230,17 @@ class rsa_functionality(object):
         d = x[0] % self.phi
         return d
 
-    def encrypt_or_decrypt_message(self, encrypt = True):
+    def encrypt_or_decrypt_message(self, plaintext_in_integers=NULL,ciphertext_in_integers=NULL,encrypt = True):
         
         #encrypt
         if encrypt:
-            # C = M^e mod n
-            C = ((self.M)**(self.e)) % self.n
+            #fast exponentiation
+            ciphertext = pow(plaintext_in_integers,self.e,self.n)
 
-            return C
+            return ciphertext
         #decrypt
         else:
-            # M = C^d mod n
-            M = ((self.C)**(self.d)) % self.n
+            #fast exponentiation
+            M = pow(ciphertext_in_integers,self.d,self.n)
 
             return M
