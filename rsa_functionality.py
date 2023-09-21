@@ -8,17 +8,22 @@ from gcd import gcd
 class rsa_functionality(object):
 
     def __init__(self):
+        # Plaintext
         self.M = NULL
+        # Ciphertext, but as an integer!
         self.C = NULL
-        self.decrypted_message = NULL
+        # Message that will be digitally signed
+        self.signed_M = NULL
+        # Original message to compare signed message
+        self.not_signed_M = NULL
 
     #converting between strings and integers
-    def message_conversion(self,numbers=NULL,message='',convert_to_text=True):
+    def message_conversion(self,message=NULL,convert_to_text=True):
 
         #conver to string
         if convert_to_text:
             #convert numbers to a string
-            numbers = str(numbers)
+            numbers = str(message)
             numbers_list = []
             #make a list of string numbers, each index containing 2 digits
             for i in range(0, len(numbers), 2):
@@ -53,18 +58,9 @@ class rsa_functionality(object):
             print("Sorry, no received messages at the moment\n")
             return
         
-        decrypted_message = self.encrypt_or_decrypt_message(encrypt=False)
-
-        # decrypted_message = str(decrypted_message)
-
-        # decrypted_message_list = []
-        # for i in range(0, len(decrypted_message), 2):
-        #     decrypted_message_list.append(decrypted_message[i:i+2])
-
+        ciphertext_in_integers = self.C
         
-        # temp_M = ''
-        # for x in decrypted_message_list:
-        #     temp_M += chr(int(x))
+        decrypted_message = self.encrypt_or_decrypt_message(ciphertext_in_integers=ciphertext_in_integers,encrypt=False)
 
         decrypted_message = self.message_conversion(decrypted_message,convert_to_text=True)
 
@@ -90,57 +86,55 @@ class rsa_functionality(object):
         message_to_encrypt = input("\nEnter message: ")
 
         # check user entry, if there are any restrictions, put them here
+        self.M = message_to_encrypt
 
         message_to_encrypt = self.message_conversion(message_to_encrypt,convert_to_text=False)
 
-        #store this into M for encryption
-
-
-        # # check user entry, if there are any restrictions, put them here
-        # # if isinstance(int(self.M),int) == True:
-        # #     print("Sorry, please enter a valid String. You will now be taken to the main menu\n")
-        # #     return
-
-        # # DO SOMETHING ON SELF.M!!!!!
-        # self.M = self.M.upper()
-
-        # temp_M = ''
-        # for x in self.M:
-        #     x = ord(x)
-        #     # x = (x-65)%26
-        #     # x += 65
-        #     # temp_M += chr(x)
-        #     temp_M += str(x)
-
-        # self.M = int(temp_M)
-
-        # print("Your message you typed converted: " + str(self.M))
-
         # Returns Ciphertext
-        self.C = self.encrypt_or_decrypt_message()
+        self.C = self.encrypt_or_decrypt_message(plaintext_in_integers=message_to_encrypt,encrypt=True)
 
         print("\nMessage encrypted and sent...\n")
 
-        print(self.C)
+        #print(self.C)
 
-    # For public user to authenticate a digital signature
-    def auth_digital_sig(self):
-        
-        print("Hello World")
 
     # For private user to digitally sign a message
-    def digital_sig(self,authenticate=True):
-        print("Hello world")
+    def digital_sig(self,authenticate):
 
-        M = input("\nPlease enter your message to be digitally signed.\n")
-
+        #authenticate
         if authenticate:
-            S = pow(M,2)
+            #check if there are any messages to authenticate
+            if self.signed_M == NULL:
+                print("\nSorry, no messages to authenticate. Back to menu.\n")
+                return
+            #otherwise, perform authentication by performing fast exponentiation using self.signed_M and public key self.e
+            message = pow(self.signed_M,self.e,self.n)
+            #conver to text
+            message = self.message_conversion(message=message,convert_to_text=True)
+            #check whether the message is the same as self.not_signed_M
+            if message == self.not_signed_M.upper():
+                print("\nSignature is valid!\n")
+            else:
+                print("\nSignature invalid!\n")
 
-        #MAKE SURE INPUT IS GOOD HERE
+        #sign
+        else:
+            message = input("\nPlease enter your message to be digitally signed: ")
+
+            #MAKE SURE INPUT IS GOOD HERE
+
+            #Store original message 
+            self.not_signed_M = message
+            #convert message into integers
+            message_to_be_signed = message
+            message_to_be_signed = self.message_conversion(message=message_to_be_signed,convert_to_text=False)
+            #now sign it, using private key self.d
+            signed_message = pow(message_to_be_signed,self.d,self.n)
+            #store it
+            self.signed_M = signed_message
+            print("\nMessage signed.\n")
 
 
-    
     def generating_RSA_keys(self):
         
         # Get n and phi
@@ -150,6 +144,8 @@ class rsa_functionality(object):
         self.e = self.generate_public_key()
 
         self.d = self.generate_private_key()
+
+        print("\nRSA keys have been generated\n")
 
 
     def picking_p_and_q(self):
@@ -214,6 +210,11 @@ class rsa_functionality(object):
             return (1, 0, a)
         (x,y,d) = self.extended_gcd(b, a%b)
         return y, x - a//b*y, d
+    
+    # show private and public keys as key owner
+    def show_keys(self):
+        print("\nPrivate key: " + str(self.d))
+        print("\nPublic key: " + str(self.e) + "\n")      
 
     # Dr. Hu
     def generate_public_key(self):

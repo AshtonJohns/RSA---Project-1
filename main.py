@@ -6,25 +6,10 @@ import math
 from rsa_functionality import rsa_functionality
 
 
-class main(object):
+class main():
 
     operation = rsa_functionality()  
-
-    #PLACEHOLDERS FOR TESTING - REVISE
-    def helloWorld1():
-        print("Hello world1")
-    def helloWorld2():
-        print("Hello world2")
-    def helloWorld3():
-        print("Hello world3")
-    def helloWorld4():
-        print("Hello world4")
-    def helloWorld5():
-        print("Hello world5")
-    def helloWorld6():
-        print("Hello world6")
-
-    print("RSA keys have been generated")
+   
     #GET KEYS HERE - REVISE
     operation.generating_RSA_keys()
 
@@ -33,11 +18,11 @@ class main(object):
                     3:('As the owner of the keys what would you like to do?', '1. Decrypt a received message','2. Digitally sign a message','3. Show the keys','4. Generating a new set of the keys','5. Exit'),}
 
     dict_of_operations = {'2a':operation.send_encrypted_message,
-                        '2b':helloWorld2,
+                        '2b':operation.digital_sig,
                         '3a':operation.decrypt_received_message,
-                        '3b':helloWorld4,
-                        '3c':helloWorld5,
-                        '3d':helloWorld6}
+                        '3b':operation.digital_sig,
+                        '3c':operation.show_keys,
+                        '3d':operation.generating_RSA_keys}
 
     #Start with key here
     key = 1
@@ -108,16 +93,28 @@ class main(object):
                 key = 1
 
         # Find associated option operations in dict_of_operations
-        else:
-            if key == '2a' or key == '2b':
+        #public user
+        elif key == '2a' or key == '2b':
+            #public user
+            if key == '2a':
                 functn = dict_of_operations[key]
                 functn()
                 # go back to public user menu
                 key = 2
-            else:
+            elif key == '2b':
+                functn = dict_of_operations[key]
+                functn(authenticate=True)
+                key = 2
+        #key owner
+        else:
+            if key == '3a' or key == '3c' or key == '3d':
                 functn = dict_of_operations[key]
                 functn()
                 # go back to key owner menu
+                key = 3
+            elif key == '3b':
+                functn = dict_of_operations[key]
+                functn(authenticate=False)
                 key = 3
 
     #Finished
