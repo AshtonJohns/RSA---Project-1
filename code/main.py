@@ -113,7 +113,7 @@ class main():
                 key = 3
 
     #Finished
-    print("\nBye for now!")
+    print("\nBye for now!\n")
 
 if __name__ == "__main__":
     main()

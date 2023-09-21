@@ -20,6 +20,12 @@ class rsa_functionality(object):
         self.C = NULL
         # Message that will be digitally signed
         self.signed_M = NULL
+        #list of signed messages that can be viewed by the public user
+        self.list_signed_Ms = []
+        #list of signed messages that contains the encrypted data
+        self.list_authenticated_Ms = []
+        #dict of signed messages for public user to choose which self.signed_M they'd like to authenticate
+        self.dict_authenticated_Ms = {}
         # Original message to compare signed message
         self.not_signed_M = NULL
 
@@ -133,15 +139,27 @@ class rsa_functionality(object):
         #authenticate
         if authenticate:
             #check if there are any messages to authenticate
-            if self.signed_M == NULL:
+            if len(self.list_signed_Ms) == 0:
                 print("\nSorry, no messages to authenticate.\n")
                 return
+            #display available messages
+            print("\nThe following messages are available:\n")
+            for key, value in enumerate(self.list_authenticated_Ms):
+                self.dict_authenticated_Ms[key] = value
+                number = key + 1
+                print("\t" + str(number) + ". " + self.list_signed_Ms[key])
+            #ask which choice
+            choice = input("\nEnter your choice: ")
+            choice = int(choice)
+            choice -= 1
+            #get value for the signed message to validate
+            self.signed_M = self.dict_authenticated_Ms[choice]
             #otherwise, perform authentication by performing fast exponentiation using self.signed_M and public key self.e
             message = pow(self.signed_M,self.e,self.n)
             #conver to text
             message = self.message_conversion(message=message,convert_to_text=True)
-            #check whether the message is the same as self.not_signed_M
-            if message == self.not_signed_M.upper():
+            #check whether the message is the same as original message
+            if message == self.list_signed_Ms[choice].upper():
                 print("\nSignature is valid!\n")
             else:
                 print("\nSignature invalid!\n")
@@ -154,14 +172,17 @@ class rsa_functionality(object):
 
             #Store original message 
             self.not_signed_M = message
+            #Store message into list of messages to be viewed by public user
+            self.list_signed_Ms.append(message)
             #convert message into integers
             message_to_be_signed = message
             message_to_be_signed = self.message_conversion(message=message_to_be_signed,convert_to_text=False)
             #now sign it, using private key self.d
             signed_message = pow(message_to_be_signed,self.d,self.n)
-            #store it
-            self.signed_M = signed_message
-            print("\nMessage signed.\n")
+            #store it into list 
+            self.list_authenticated_Ms.append(signed_message)
+            #self.signed_M = signed_message
+            print("\nMessage signed and sent.\n")
 
 
     def generating_RSA_keys(self):
