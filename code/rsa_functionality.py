@@ -1,9 +1,9 @@
 from asyncio.windows_events import NULL
 import math
 import random
-import math
 
 from gcd import gcd
+
 
 class rsa_functionality(object):
 
