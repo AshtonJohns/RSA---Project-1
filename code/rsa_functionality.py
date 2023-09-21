@@ -10,6 +10,12 @@ class rsa_functionality(object):
     def __init__(self):
         # Plaintext
         self.M = NULL
+        #list of public user's messages
+        self.list_Ms = []
+        #list of encrypted messages
+        self.list_Cs = []
+        #dictionary for key owner to choose which self.M they'd like to decrypt
+        self.dict_Ms_decrypt = {}
         # Ciphertext, but as an integer!
         self.C = NULL
         # Message that will be digitally signed
@@ -54,9 +60,29 @@ class rsa_functionality(object):
     # For private user to decrypt public user's message
     def decrypt_received_message(self):
 
-        if self.M == NULL:
-            print("Sorry, no received messages at the moment\n")
+        if len(self.list_Ms) == 0:
+            print("\nSorry, no received messages at the moment\n")
             return
+
+        print("The following messages are available: \n")
+
+        #use for loop to show the self.M's, and then store a dictionary with an key (1,2,3,etc..) and a value (self.M)
+        #reset
+        self.dict_Ms_decrypt = {}
+        for key, value in enumerate(self.list_Cs):
+            self.dict_Ms_decrypt[key] = value
+            value_str = self.list_Ms[key]
+            value_len = len(value_str)
+            number = key + 1
+            print("\t"+str(number)+". (length == "+str(value_len)+")")
+
+        #Choose 1,2,3,etc
+        choice = input("\nEnter your choice: ")
+        #conver to int
+        choice = int(choice)
+        choice -= 1
+        #find the message in the dictionary in order to decrypt
+        self.C = self.dict_Ms_decrypt.get(choice)
         
         ciphertext_in_integers = self.C
         
@@ -70,22 +96,24 @@ class rsa_functionality(object):
     # For public user to send an encrypted message
     def send_encrypted_message(self):
 
-        if self.M != NULL:
-            answer = input("\nYou have a message currently that is encrypted and ready for the private user to read. Do you want to overwrite it? y/n: ")
+        # if self.M != NULL:
+        #     answer = input("\nYou have a message currently that is encrypted and ready for the private user to read. Do you want to overwrite it? y/n: ")
 
-            if answer == 'y':
-                pass
-            elif answer == 'n':
-                return
-            else:
-                print("\nNo answer provided, you will be taken to the main menu\n")
-                return
+        #     if answer == 'y':
+        #         pass
+        #     elif answer == 'n':
+        #         return
+        #     else:
+        #         print("\nNo answer provided, you will be taken to the main menu\n")
+        #         return
 
-        #self.M = input("\nEnter message: ")
 
         message_to_encrypt = input("\nEnter message: ")
 
-        # check user entry, if there are any restrictions, put them here
+        #store this into a list of messages entered by public user
+        self.list_Ms.append(message_to_encrypt)
+
+        # check user entry, if there are any restrictions, put them here - REVISE
         self.M = message_to_encrypt
 
         message_to_encrypt = self.message_conversion(message_to_encrypt,convert_to_text=False)
@@ -93,9 +121,10 @@ class rsa_functionality(object):
         # Returns Ciphertext
         self.C = self.encrypt_or_decrypt_message(plaintext_in_integers=message_to_encrypt,encrypt=True)
 
-        print("\nMessage encrypted and sent...\n")
+        #add to list of self.Cs
+        self.list_Cs.append(self.C)
 
-        #print(self.C)
+        print("\nMessage encrypted and sent...\n")
 
 
     # For private user to digitally sign a message
@@ -105,7 +134,7 @@ class rsa_functionality(object):
         if authenticate:
             #check if there are any messages to authenticate
             if self.signed_M == NULL:
-                print("\nSorry, no messages to authenticate. Back to menu.\n")
+                print("\nSorry, no messages to authenticate.\n")
                 return
             #otherwise, perform authentication by performing fast exponentiation using self.signed_M and public key self.e
             message = pow(self.signed_M,self.e,self.n)
@@ -183,8 +212,8 @@ class rsa_functionality(object):
         # n1,n2: very large integers
         # k: constant integer, large enough so that probability of p not being prime is p ≤ (1/2)^k, 
         # in this case, (1/2)^k can be arbitrarily small
-        n1=100000
-        n2=150000
+        n1=100000000000
+        n2=150000000000
         k=150
         p = random.randint(n1,n2)
         # pseudo_prime = False
