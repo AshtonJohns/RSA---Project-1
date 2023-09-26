@@ -222,11 +222,11 @@ class rsa_functionality(object):
         # k: constant integer, large enough so that probability of p not being prime is p ≤ (1/2)^k, 
         # in this case, (1/2)^k can be arbitrarily small
         # Large p and q
-        # n1=100000000000
-        # n2=150000000000
+        n1=1000000000000
+        n2=1500000000000
         #Small p and q
-        n1=8000
-        n2=9000
+        # n1=8000
+        # n2=9000
         
         k=150
         p = random.randint(n1,n2)
