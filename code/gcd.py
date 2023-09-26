@@ -8,8 +8,8 @@ def gcd(a=1, b=1):
     else:
         return gcd(b, a%b)
 
-print(gcd(412, 260))
-print(gcd(260, 412))
+# print(gcd(412, 260))
+# print(gcd(260, 412))
 
 def extended_gcd(a =1, b = 1):
     ''' The extended_gcd function implements the
@@ -20,8 +20,8 @@ def extended_gcd(a =1, b = 1):
     (x, y, d) = extended_gcd(b, a%b)
     return y, x - a//b*y, d
 
-x, y, d = extended_gcd(144, 900)
-print(x, y, d)
-x, y, d = extended_gcd(412, 260)
-print(x, y, d)
+# x, y, d = extended_gcd(144, 900)
+# print(x, y, d)
+# x, y, d = extended_gcd(412, 260)
+# print(x, y, d)
         
