@@ -1,3 +1,12 @@
+""""
+Author(s): Ashton Johns
+This program does all the work for the RSA implementation, and involves: 
+* key generation
+* encryption
+* decryption
+* digital signature
+"""
+
 from asyncio.windows_events import NULL
 import math
 import random
