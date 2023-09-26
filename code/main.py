@@ -1,3 +1,7 @@
+""""
+Author(s): Ashton Johns
+This program drives the menus for the user types and the choices associated for each user type.
+"""
 from rsa_functionality import rsa_functionality
 
 
