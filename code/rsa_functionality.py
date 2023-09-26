@@ -102,18 +102,6 @@ class rsa_functionality(object):
     # For public user to send an encrypted message
     def send_encrypted_message(self):
 
-        # if self.M != NULL:
-        #     answer = input("\nYou have a message currently that is encrypted and ready for the private user to read. Do you want to overwrite it? y/n: ")
-
-        #     if answer == 'y':
-        #         pass
-        #     elif answer == 'n':
-        #         return
-        #     else:
-        #         print("\nNo answer provided, you will be taken to the main menu\n")
-        #         return
-
-
         message_to_encrypt = input("\nEnter message: ")
 
         #store this into a list of messages entered by public user
@@ -233,8 +221,13 @@ class rsa_functionality(object):
         # n1,n2: very large integers
         # k: constant integer, large enough so that probability of p not being prime is p ≤ (1/2)^k, 
         # in this case, (1/2)^k can be arbitrarily small
-        n1=100000000000
-        n2=150000000000
+        # Large p and q
+        # n1=100000000000
+        # n2=150000000000
+        #Small p and q
+        n1=8000
+        n2=9000
+        
         k=150
         p = random.randint(n1,n2)
         # pseudo_prime = False

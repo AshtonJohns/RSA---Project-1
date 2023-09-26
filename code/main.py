@@ -61,6 +61,8 @@ class main():
                 elif option == '3':
                     # exit program
                     cont = False
+                else:
+                    print("\nPlease select a valid choice.\n")
             #public user
             elif key == 2:
                 if option == '1':
@@ -69,6 +71,8 @@ class main():
                     key = '2b'
                 elif option == '3':
                     key = 1
+                else:
+                    print("\nPlease select a valid choice.\n")
             #key owner 
             elif key == 3:
                 if option == '1':
@@ -81,11 +85,13 @@ class main():
                     key = '3d'
                 elif option == '5':
                     key = 1
+                else:
+                    print("\nPlease select a valid choice.\n")
             #invalid choice
-            else:
-                #reset
-                print("Wrong selection, back to menu\n")
-                key = 1
+            # else:
+            #     #reset
+            #     print("Wrong selection, back to menu\n")
+            #     key = 1
 
         # Find associated option operations in dict_of_operations
         #public user
@@ -112,7 +118,7 @@ class main():
                 functn(authenticate=False)
                 key = 3
 
-    #Finished
+    #Finished, cont = False
     print("\nBye for now!\n")
 
 if __name__ == "__main__":
